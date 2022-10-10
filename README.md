@@ -163,3 +163,20 @@ Push your changes to Shopizer
 -------------------
 
 Please open a PR (pull request) in order to have your changes merged to the upstream
+
+### POSTGRESQL
+```
+createdb SHOPIZER
+(dropdb SHOPIZER)
+psql SHOPIZER
+\l
+CREATE SCHEMA IF NOT EXISTS SALESMANAGER;
+REVOKE ALL ON schema SALESMANAGER FROM public;
+CREATE USER shopizer_db_user WITH PASSWORD '15ih5BO8KbJh4smr';
+\du
+(DROP ROLE salesmanager)
+GRANT ALL ON schema SALESMANAGER TO shopizer_db_user;
+ALTER ROLE shopizer_db_user SET search_path = SALESMANAGER;
+```
+
+GRANT ALL ON schema public TO salesmanager;
