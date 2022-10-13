@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.17.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="Volodymyr Dotsenko">
+        <comment>Languages</comment>
+        <insert tableName="LANGUAGE">
+            <column name="LANGUAGE_ID">1</column>
+            <column name="DATE_CREATED">${now}</column>
+            <column name="CODE">en</column>
+        </insert>
+        <insert tableName="LANGUAGE">
+            <column name="LANGUAGE_ID">2</column>
+            <column name="DATE_CREATED">${now}</column>
+            <column name="CODE">uk</column>
+        </insert>
+        <insert tableName="LANGUAGE">
+            <column name="LANGUAGE_ID">3</column>
+            <column name="DATE_CREATED">${now}</column>
+            <column name="CODE">pl</column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
