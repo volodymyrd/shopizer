@@ -97,12 +97,18 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		return countryService.count() == 0;
 	}
 
+	public boolean isNoLanguages() {
+		return languageService.count() == 0;
+	}
+
 	@Transactional
 	public void populate(String contextName) throws ServiceException {
 		this.name =  contextName;
 
 		createSecurityGroups();
-		// createLanguages();
+		if (isNoLanguages()) {
+			createLanguages();
+		}
 		createCountries();
 		createZones();
 		createCurrencies();
