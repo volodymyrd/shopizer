@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.salesmanager.core.model.merchant.MerchantStore;
+import org.springframework.data.repository.query.Param;
 
 public interface PageableMerchantRepository extends PagingAndSortingRepository<MerchantStore, Long> {
 
@@ -15,8 +16,8 @@ public interface PageableMerchantRepository extends PagingAndSortingRepository<M
 	@Query(value = "select distinct m from MerchantStore m left join fetch m.parent mp left join fetch m.country mc left join fetch m.currency mc left join fetch m.zone mz left join fetch m.defaultLanguage md left join fetch m.languages mls where mp.code = ?1", countQuery = "select count(distinct m) from MerchantStore m join m.parent mp where mp.code = ?1")
 	Page<MerchantStore> listByStore(String code, Pageable pageable);
 
-	@Query(value = "select distinct m from MerchantStore m left join fetch m.parent mp left join fetch m.country mc left join fetch m.currency mc left join fetch m.zone mz left join fetch m.defaultLanguage md left join fetch m.languages mls where (?1 is null or m.storename like %?1%)", countQuery = "select count(distinct m) from MerchantStore m where (?1 is null or m.storename like %?1%)")
-	Page<MerchantStore> listAll(String storeName, Pageable pageable);
+	@Query(value = "select distinct m from MerchantStore m left join fetch m.parent mp left join fetch m.country mc left join fetch m.currency mc left join fetch m.zone mz left join fetch m.defaultLanguage md left join fetch m.languages mls where (:storeName is null or m.storename like %:storeName%)", countQuery = "select count(distinct m) from MerchantStore m where (:storeName is null or m.storename like %:storeName%)")
+	Page<MerchantStore> listAll(@Param("storeName") String storeName, Pageable pageable);
 
 	@Query(value = "select distinct m from MerchantStore m left join fetch m.parent mp "
 			+ "left join fetch m.country mc " + "left join fetch m.currency mc left " + "join fetch m.zone mz "
@@ -33,7 +34,11 @@ public interface PageableMerchantRepository extends PagingAndSortingRepository<M
 	Page<MerchantStore> listChilds(String storeCode, String storeName, Pageable pageable);
 
 	@Query(value = "select * from MERCHANT_STORE m " + "where (m.STORE_CODE = ?1 or (?2 is null or m.PARENT_ID = ?2)) "
-			+ "and (?3 is null or m.STORE_NAME like %?3%)", countQuery = "select count(*) from {h-schema}MERCHANT_STORE m where (m.STORE_CODE = ?1 or (?2 is null or m.PARENT_ID = ?2)) and (?3 is null or m.STORE_NAME like %?3%)", nativeQuery = true)
+			, countQuery = "select count(*) from {h-schema}MERCHANT_STORE m where (m.STORE_CODE = ?1 or (?2 is null or m.PARENT_ID = ?2))", nativeQuery = true)
+	Page<MerchantStore> listByGroup(String storeCode, Integer id, Pageable pageable);
+
+	@Query(value = "select * from MERCHANT_STORE m " + "where (m.STORE_CODE = ?1 or (?2 is null or m.PARENT_ID = ?2)) "
+			+ "and m.STORE_NAME like %?3%", countQuery = "select count(*) from {h-schema}MERCHANT_STORE m where (m.STORE_CODE = ?1 or (?2 is null or m.PARENT_ID = ?2)) and m.STORE_NAME like %?3%", nativeQuery = true)
 	Page<MerchantStore> listByGroup(String storeCode, Integer id, String storeName, Pageable pageable);
 
 }
