@@ -1,15 +1,12 @@
 # Shopizer 3 (for java 1.8 +) (tested with Java 11)
 
-
 ### Shopizer 2.X (for java 1.8 +) is still available
-
 
 [![last_version](https://img.shields.io/badge/last_version-v3.2.2-blue.svg?style=flat)](https://github.com/shopizer-ecommerce/shopizer/tree/3.2.0)
 [![Official site](https://img.shields.io/website-up-down-green-red/https/shields.io.svg?label=official%20site)](http://www.shopizer.com/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/shopizerecomm/shopizer.svg)](https://hub.docker.com/r/shopizerecomm/shopizer)
 [![stackoverflow](https://img.shields.io/badge/shopizer-stackoverflow-orange.svg?style=flat)](http://stackoverflow.com/questions/tagged/shopizer)
 [![CircleCI](https://circleci.com/gh/shopizer-ecommerce/shopizer.svg?style=svg)](https://circleci.com/gh/shopizer-ecommerce/shopizer)
-
 
 Java open source e-commerce software
 
@@ -29,22 +26,20 @@ Shopizer Headless commerce consists of the following components:
 - Angular administration web application
 - React JS front end application
 
-
-
 See the demo:
 -------------------
 Headless demo Available soon
 
 Demo site for Shopizer 2.X is still available [Legacy Shopizer demo](http://demo.shopizer.com)
 
-1.  Run from Docker images:
+1. Run from Docker images:
 
 From the command line:
 
 ```
 docker run -p 8080:8080 shopizerecomm/shopizer:latest
 ```
-       
+
 2. Run the administration tool
 
 ⋅⋅⋅ Requires the java backend to be running
@@ -54,7 +49,6 @@ docker run \
  -e "APP_BASE_URL=http://localhost:8080/api" \
  -p 82:80 shopizerecomm/shopizer-admin
 ```
-
 
 3. Run react shop sample site
 
@@ -75,7 +69,7 @@ https://app.swaggerhub.com/apis-docs/shopizer/shopizer-rest-api/3.0.1#/
 Get the source code:
 -------------------
 Clone the repository:
-     
+
 	 $ git clone git://github.com/shopizer-ecommerce/shopizer.git
 	 
 	 $ git clone git://github.com/shopizer-ecommerce/shopizer-admin.git
@@ -84,13 +78,13 @@ Clone the repository:
 
 If this is your first time using Github, review http://help.github.com to learn the basics.
 
-You can also download the zip file containing the code from https://github.com/shopizer-ecommerce for each of the the projects above
+You can also download the zip file containing the code from https://github.com/shopizer-ecommerce for each of the the
+projects above
 
 To build the application:
 -------------------
 
 1. Shopizer backend
-
 
 From the command line:
 
@@ -112,7 +106,6 @@ Form compiling and running Shopizer admin consult the repo README file
 -------------------
 
 Access the headless web application at: http://localhost:8080/swagger-ui.html
-
 
 The instructions above will let you run the application with default settings and configurations.
 Please read the instructions on how to connect to MySQL, configure an email server and configure other subsystems
@@ -158,19 +151,21 @@ Create new branch in your repository
 
 	   $ git checkout -b branch-name
 
-
 Push your changes to Shopizer
 -------------------
 
 Please open a PR (pull request) in order to have your changes merged to the upstream
 
 ### POSTGRESQL
+
 ```
 createdb SHOPIZER
+create database "SHOPIZER";
 (dropdb SHOPIZER)
 psql SHOPIZER
 \l
 CREATE SCHEMA IF NOT EXISTS SALESMANAGER;
+\dn
 REVOKE ALL ON schema SALESMANAGER FROM public;
 CREATE USER shopizer_db_user WITH PASSWORD '15ih5BO8KbJh4smr';
 \du
@@ -179,4 +174,50 @@ GRANT ALL ON schema SALESMANAGER TO shopizer_db_user;
 ALTER ROLE shopizer_db_user SET search_path = SALESMANAGER;
 ```
 
-GRANT ALL ON schema public TO salesmanager;
+#### DOCKER
+
+```
+docker pull postgres:14.2
+```
+
+```
+docker run -itd -e POSTGRES_USER=vova -e POSTGRES_PASSWORD=vova -e POSTGRES_HOST_AUTH_METHOD=trust -p 54320:5432 -v local_psql_data:/var/lib/postgresql/data --name local-psql postgres:14.2
+```
+
+```
+docker logs -f local-psql
+```
+
+```
+docker exec -it local-psql psql -U vova
+```
+
+### Useful docker commands
+
+```
+docker images
+```
+
+- List all containers (only IDs)
+
+```
+docker ps -aq
+```
+
+- Stop all running containers
+
+```
+docker stop $(docker ps -aq)
+```
+
+- Remove all containers
+
+```
+docker rm $(docker ps -aq)
+```
+
+- Remove all images
+
+```
+docker rmi $(docker images -q)
+```
