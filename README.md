@@ -181,7 +181,8 @@ docker pull postgres:14.2
 ```
 
 ```
-docker run -itd -e POSTGRES_USER=vova -e POSTGRES_PASSWORD=vova -e POSTGRES_HOST_AUTH_METHOD=trust -p 54320:5432 -v local_psql_data:/var/lib/postgresql/data --name local-psql postgres:14.2
+docker run -itd -e POSTGRES_USER=vova -e POSTGRES_PASSWORD=vova -e POSTGRES_HOST_AUTH_METHOD=trust \
+-p 54320:5432 -v local_psql_data:/var/lib/postgresql/data --name local-psql postgres:14.2
 ```
 
 ```
