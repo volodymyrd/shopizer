@@ -1,9 +1,11 @@
 package com.salesmanager.shop.store.controller.marketplace.facade;
 
+import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.system.optin.OptinType;
 import com.salesmanager.shop.model.marketplace.ReadableMarketPlace;
+import com.salesmanager.shop.model.marketplace.SignupStore;
 import com.salesmanager.shop.model.system.ReadableOptin;
 
 /**
@@ -12,8 +14,9 @@ import com.salesmanager.shop.model.system.ReadableOptin;
  *
  */
 public interface MarketPlaceFacade {
-	
-	
+
+	void signup(SignupStore store) throws ServiceException;
+
 	/**
 	 * Get a MarketPlace from store code
 	 * @param store
@@ -22,7 +25,7 @@ public interface MarketPlaceFacade {
 	 * @throws Exception
 	 */
 	ReadableMarketPlace get(String store, Language lang) ;
-	
+
 	/**
 	 * Finds an optin by merchant and type
 	 * @param store
