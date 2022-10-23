@@ -1,16 +1,15 @@
 package com.salesmanager.shop.model.marketplace;
 
-import java.io.Serializable;
-
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
 public class SignupStore implements Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	@NotEmpty
 	private String firstName;
 	@NotEmpty
@@ -21,7 +20,7 @@ public class SignupStore implements Serializable {
 	private String password;
 	@NotEmpty
 	private String repeatPassword;
-	
+
 	@NotEmpty
 	private String name;
 	@NotEmpty
@@ -36,12 +35,15 @@ public class SignupStore implements Serializable {
 	private String stateProvince;
 	@NotEmpty
 	private String country;
-	
+
+	@NotEmpty
+	private String defaultLang;
+
 	@NotEmpty
 	private String returnUrl;
-	
-	
-	
+
+
+
 	public String getReturnUrl() {
 		return returnUrl;
 	}
@@ -120,5 +122,11 @@ public class SignupStore implements Serializable {
 	public void setCountry(String country) {
 		this.country = country;
 	}
+	public String getDefaultLang() {
+		return defaultLang;
+	}
 
+	public void setDefaultLang(String defaultLang) {
+		this.defaultLang = defaultLang;
+	}
 }
