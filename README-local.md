@@ -33,6 +33,9 @@ docker logs -f local-psql
 
 ```
 docker exec -it local-psql psql -U vova
+drop database "SHOPIZER";
+create database "SHOPIZER";
+\q
 ```
 
 ### Useful docker commands
