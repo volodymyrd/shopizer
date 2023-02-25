@@ -1,16 +1,5 @@
 package com.salesmanager.shop.store.facade.product;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.NotImplementedException;
-import org.jsoup.helper.Validate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.catalog.product.ProductService;
 import com.salesmanager.core.business.services.catalog.product.attribute.ProductAttributeService;
@@ -25,25 +14,24 @@ import com.salesmanager.core.model.content.FileContentType;
 import com.salesmanager.core.model.content.InputContentFile;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
-import com.salesmanager.shop.mapper.catalog.PersistableProductAttributeMapper;
-import com.salesmanager.shop.mapper.catalog.PersistableProductOptionMapper;
-import com.salesmanager.shop.mapper.catalog.PersistableProductOptionValueMapper;
-import com.salesmanager.shop.mapper.catalog.ReadableProductAttributeMapper;
-import com.salesmanager.shop.mapper.catalog.ReadableProductOptionMapper;
-import com.salesmanager.shop.mapper.catalog.ReadableProductOptionValueMapper;
+import com.salesmanager.shop.mapper.catalog.*;
 import com.salesmanager.shop.model.catalog.product.attribute.PersistableProductAttribute;
 import com.salesmanager.shop.model.catalog.product.attribute.PersistableProductOptionValue;
-import com.salesmanager.shop.model.catalog.product.attribute.api.PersistableProductOptionEntity;
-import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductAttributeEntity;
-import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductAttributeList;
-import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionEntity;
-import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionList;
-import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionValue;
-import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionValueList;
+import com.salesmanager.shop.model.catalog.product.attribute.api.*;
 import com.salesmanager.shop.model.entity.CodeEntity;
 import com.salesmanager.shop.store.api.exception.ResourceNotFoundException;
 import com.salesmanager.shop.store.api.exception.ServiceRuntimeException;
 import com.salesmanager.shop.store.controller.product.facade.ProductOptionFacade;
+import org.apache.commons.lang3.NotImplementedException;
+import org.jsoup.helper.Validate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductOptionFacadeImpl implements ProductOptionFacade {
@@ -221,6 +209,9 @@ public class ProductOptionFacadeImpl implements ProductOptionFacade {
 			MerchantStore store, Language language) {
 		Validate.notNull(optionValue, "Option value code must not be null");
 		Validate.notNull(store, "Store code must not be null");
+		optionValue.getDescriptions().forEach(d -> {
+			Validate.notEmpty(d.getName(), "Description name must not be null for lang " + d.getLanguage());
+		});
 
 		ProductOptionValue value = new ProductOptionValue();
 		if (optionValue.getId() != null && optionValue.getId().longValue() > 0) {
@@ -328,7 +319,7 @@ public class ProductOptionFacadeImpl implements ProductOptionFacade {
 
 		return readable;
 	}
-	
+
 	private Product product(long id, MerchantStore store) {
 		Product product = productService.getById(id);
 
@@ -340,7 +331,7 @@ public class ProductOptionFacadeImpl implements ProductOptionFacade {
 			throw new ResourceNotFoundException(
 					"Productnot found id [" + id + "] for store [" + store.getCode() + "]");
 		}
-		
+
 		return product;
 	}
 
@@ -353,8 +344,8 @@ public class ProductOptionFacadeImpl implements ProductOptionFacade {
 
 			ReadableProductAttributeList attrList = new ReadableProductAttributeList();
 			Page<ProductAttribute> attr = null;
-			
-			
+
+
 			if(language != null) { //all entry
 				//attributes = productAttributeService.getByProductId(store, product, language);
 				attr = productAttributeService.getByProductId(store, product, language, page, count);
@@ -417,8 +408,8 @@ public class ProductOptionFacadeImpl implements ProductOptionFacade {
 	@Override
 	public void addOptionValueImage(MultipartFile image, Long optionValueId,
 			MerchantStore store, Language language) {
-		
-		
+
+
 		Validate.notNull(optionValueId,"OptionValueId must not be null");
 		Validate.notNull(image,"Image must not be null");
 		//get option value
@@ -426,7 +417,7 @@ public class ProductOptionFacadeImpl implements ProductOptionFacade {
 		if(value == null) {
 			throw new ResourceNotFoundException("Product option value [" + optionValueId + "] not found");
 		}
-		
+
 		try {
 			String imageName = image.getOriginalFilename();
 			InputStream inputStream = image.getInputStream();
@@ -443,8 +434,8 @@ public class ProductOptionFacadeImpl implements ProductOptionFacade {
 		}
 
 
-		
-		
+
+
 		return;
 	}
 
@@ -456,7 +447,7 @@ public class ProductOptionFacadeImpl implements ProductOptionFacade {
 		if(value == null) {
 			throw new ResourceNotFoundException("Product option value [" + optionValueId + "] not found");
 		}
-		
+
 		try {
 
 			contentService.removeFile(store.getCode(), FileContentType.PROPERTY, value.getProductOptionValueImage());
@@ -476,26 +467,26 @@ public class ProductOptionFacadeImpl implements ProductOptionFacade {
 		Validate.notNull(store,"Merchant cannot be null");
 
 		//convert to model
-		
+
 		List<ProductAttribute> modelAttributes = attributes.stream().map(attr -> persistableProductAttributeMapper.convert(attr, store, null)).collect(Collectors.toList());
-		
+
 		try {
 			productAttributeService.saveAll(modelAttributes);
-		
+
 			//save to a product
 			Product product = this.product(productId, store);
 			product.getAttributes().addAll(modelAttributes);
-		
-		
+
+
 			productService.save(product);
 		} catch (ServiceException e) {
 			throw new ServiceRuntimeException("Exception while saving product with attributes", e);
 		}
-		
+
 		return modelAttributes.stream().map(e -> codeEntity(e)).collect(Collectors.toList());
 
 	}
-	
+
 	private CodeEntity codeEntity(ProductAttribute attr) {
 		CodeEntity entity = new CodeEntity();
 		entity.setId(attr.getId());
@@ -507,7 +498,7 @@ public class ProductOptionFacadeImpl implements ProductOptionFacade {
 	public void updateAttributes(List<PersistableProductAttribute> attributes, Long productId, MerchantStore store) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException("Method not implemented");
-		
+
 	}
 
 }
