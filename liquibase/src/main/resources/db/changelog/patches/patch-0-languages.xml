@@ -24,5 +24,10 @@
             <column name="DATE_CREATED">${now}</column>
             <column name="CODE">pl</column>
         </insert>
+        <insert tableName="LANGUAGE">
+            <column name="LANGUAGE_ID">4</column>
+            <column name="DATE_CREATED">${now}</column>
+            <column name="CODE">es</column>
+        </insert>
     </changeSet>
 </databaseChangeLog>
